@@ -10,6 +10,11 @@ const UpdateForm = (props) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [image, setImage] = useState("");
+  const [nameOld, setNameOld] = useState("");
+  const [priceOld, setPriceOld] = useState("");
+  const [quantityOld, setQuantityOld] = useState("");
+  const [imageOld, setImageOld] = useState("");
 
   useEffect(() => {
     fetchItem(id); // Ensure props.id is passed to fetchItem
@@ -22,6 +27,10 @@ const UpdateForm = (props) => {
       setName(itemData.name);
       setPrice(itemData.price);
       setQuantity(itemData.quantity);
+      setNameOld(itemData.name);
+      setPriceOld(itemData.price);
+      setQuantityOld(itemData.quantity);
+      setImageOld(itemData.image);
     } catch (error) {
       console.error("Error fetching item:", error);
     }
@@ -29,11 +38,20 @@ const UpdateForm = (props) => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("quantity", quantity);
+
+    if (image) {
+      formData.append("image", image);
+    }
+  
     try {
-      const response = await axios.put(`${API_URL}/${id}`, {
-        name,
-        price,
-        quantity,
+      const response = await axios.put(`${API_URL}/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       console.log("Item updated:", response.data);
       setIsUpdated(true);
@@ -41,6 +59,7 @@ const UpdateForm = (props) => {
       console.error("Error updating item:", error);
     }
   };
+  
 
   if (isUpdated) {
     return <Navigate to="/" replace />;
@@ -89,7 +108,7 @@ const UpdateForm = (props) => {
                 </div>
               </div>
             </div>
-            <div className="row mb-3">
+            <div className="row mb-2">
               <div className="col">
                 <label className="form-text" htmlFor="quantity">
                   Quantity
@@ -102,6 +121,30 @@ const UpdateForm = (props) => {
                   name="quantity"
                   id="quantity"
                 />
+              </div>
+            </div>
+            <div className="row mb-2">
+              <div className="col">
+                <label className="form-text" htmlFor="image">
+                  Image
+                </label>
+                <input
+                  className="form-control"
+                  type="file"
+                  onChange={(e) => setImage(e.target.files[0])}
+                  // onChange={handleFileChange}
+                  // required
+                  name="image"
+                  id="image"
+                />
+                <p
+                  className="form-text fst-italic"
+                  style={{ fontSize: "12px" }}
+                >
+                  Only following file types supported: JPG, JPEG, PNG, PNEG,
+                  GIF, SVG. <br />
+                  <strong>File size must not exceed 5Mbs</strong>
+                </p>
               </div>
             </div>
             <div className="row">
@@ -146,19 +189,36 @@ const UpdateForm = (props) => {
                 </thead>
                 <tbody>
                   <tr>
+                    <td>Image</td>
+                    <td>
+                      <img
+                        src={`http://localhost:8080/storage/${imageOld}`}
+                        alt={nameOld}
+                        height={`150px`}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Name</td>
-                    <td className="fst-italic">{name}</td>
+                    <td className="fst-italic">{nameOld}</td>
                   </tr>
                   <tr>
                     <td>Price</td>
-                    <td className="fst-italic">${price}</td>
+                    <td className="fst-italic">${priceOld}</td>
                   </tr>
                   <tr>
                     <td>Quantity</td>
-                    <td className="fst-italic">{quantity}</td>
+                    <td className="fst-italic">{quantityOld}</td>
                   </tr>
                 </tbody>
               </table>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <p className="form-text text-center fst-italic">
+                This is the currently saved Data for the Item.
+              </p>
             </div>
           </div>
         </div>

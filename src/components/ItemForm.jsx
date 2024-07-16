@@ -9,15 +9,28 @@ const ItemForm = (props) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [image, setImage] = useState("");
 
+  // const handleFileChange = (e) => {
+  //   setImage(e.target.files[0]);
+  // };
+  
   const handleAdd = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("quantity", quantity);
+    if (image) {
+      formData.append("image", image);
+    }
     try {
-      const response = await axios.post(API_URL, {
-        name,
-        price,
-        quantity,
+      const response = await axios.post(API_URL, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
+      
       console.log("Item created:", response.data);
       setIsAdded(true);
     } catch (error) {
@@ -72,7 +85,7 @@ const ItemForm = (props) => {
                 </div>
               </div>
             </div>
-            <div className="row mb-3">
+            <div className="row mb-2">
               <div className="col">
                 <label className="form-text" htmlFor="quantity">
                   Quantity
@@ -85,6 +98,23 @@ const ItemForm = (props) => {
                   name="quantity"
                   id="quantity"
                 />
+              </div>
+            </div>
+            <div className="row mb-2">
+              <div className="col">
+                <label className="form-text" htmlFor="image">
+                  Image
+                </label>
+                <input
+                  className="form-control"
+                  type="file"
+                  onChange={(e) => setImage(e.target.files[0])}
+                  // onChange={handleFileChange}
+                  required
+                  name="image"
+                  id="image"
+                />
+                <p className="form-text fst-italic" style={{fontSize:"12px"}}>Only following file types supported: JPG, JPEG, PNG, PNEG, GIF, SVG. <br/><strong>File size must not exceed 5Mbs</strong></p>
               </div>
             </div>
             <div className="row">

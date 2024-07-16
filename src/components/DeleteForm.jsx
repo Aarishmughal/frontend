@@ -11,6 +11,7 @@ const DeleteForm = (props) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [image, setImage] = useState("");
 
   useEffect(() => {
     fetchItem(id);
@@ -23,6 +24,7 @@ const DeleteForm = (props) => {
       setName(itemData.name);
       setPrice(itemData.price);
       setQuantity(itemData.quantity);
+      setImage(itemData.image);
     } catch (error) {
       console.error("Error fetching item:", error);
     }
@@ -63,6 +65,10 @@ const DeleteForm = (props) => {
                 </thead>
                 <tbody>
                   <tr>
+                    <td>Image</td>
+                    <td><img src={`http://localhost:8080/storage/${image}`} alt={name} height={`150px`}/></td>
+                  </tr>
+                  <tr>
                     <td>Name</td>
                     <td className="fw-bold">{name}</td>
                   </tr>
@@ -80,7 +86,9 @@ const DeleteForm = (props) => {
           </div>
           <div className="row">
             <div className="col">
-                <p className="form-text text-center fst-italic">Are you Sure you want to delete this Item?</p>
+              <p className="form-text text-center fst-italic">
+                Are you Sure you want to delete this Item?
+              </p>
             </div>
           </div>
           <form onSubmit={handleDelete}>

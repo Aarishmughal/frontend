@@ -15,6 +15,7 @@ const ItemList = () => {
     try {
       const response = await axios.get(API_URL);
       setItems(response.data);
+      console.log(response);
     } catch (error) {
       console.error("Error fetching items:", error);
     }
@@ -38,9 +39,10 @@ const ItemList = () => {
           </div>
           <div className="row px-3">
             <div className="col-lg">
-              <table className="table table-hover table-bordered">
+              <table className="table table-hover table-bordered table-sm">
                 <thead className="border">
                   <th>ID</th>
+                  <th>Image</th>
                   <th>Name</th>
                   <th>Price</th>
                   <th>Quantity</th>
@@ -48,8 +50,9 @@ const ItemList = () => {
                 </thead>
                 <tbody>
                   {items.map((item) => (
-                    <tr key={item.id}>
+                    <tr>
                       <td>{item.id}</td>
+                      <td className="p-1"><img src={`http://localhost:8080/storage/${item.image}`} alt={item.name} height={`100px`}/></td>
                       <td>{item.name}</td>
                       <td>${item.price}</td>
                       <td>{item.quantity}</td>
